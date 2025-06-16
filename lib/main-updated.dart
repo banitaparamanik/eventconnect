@@ -18,9 +18,7 @@ void main() async {
   await dotenv.load();
   WidgetsFlutterBinding.ensureInitialized();
   ErrorWidget.builder = (FlutterErrorDetails details) {
-    return CustomErrorWidget(
-      errorDetails: details,
-    );
+    return CustomErrorWidget(errorDetails: details);
   };
   Future.wait([
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
@@ -36,25 +34,21 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Sizer(builder: (context, orientation, screenType) {
       return MaterialApp(
-        title: 'eventconnect',
-        theme: AppTheme.lightTheme,
-        darkTheme: AppTheme.darkTheme,
-        themeMode: ThemeMode.light,
-        builder: (context, child) {
-          return CustomWidgetInspector(
+          title: 'eventconnect',
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          themeMode: ThemeMode.light,
+          builder: (context, child) {
+            return CustomWidgetInspector(
             // isInspectorEnabled: isInspectionRunning == 'true',
             child: MediaQuery(
-            data: MediaQuery.of(context).copyWith(
-              textScaler: TextScaler.linear(1.0),
-            ),
-            child: child!,
-          ) // Preserve original MediaQuery content
+                data: MediaQuery.of(context)
+                    .copyWith(textScaler: TextScaler.linear(1.0)),
+                child: child!) // Preserve original MediaQuery content
         );
-        },
-        debugShowCheckedModeBanner: false,
-        routes: AppRoutes.routes,
-        initialRoute: AppRoutes.initial,
-      );
+          },
+          debugShowCheckedModeBanner: false,
+          initialRoute: AppRoutes.initial);
     });
   }
 }
