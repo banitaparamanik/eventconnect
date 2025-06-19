@@ -27,7 +27,7 @@ class AppRoutes {
 class AppRouter {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
-      case '/':
+      case '/': 
       case AppRoutes.onboardingFlow:
         return CupertinoPageRoute(builder: (_) => const OnboardingFlow());
       case AppRoutes.dashboardHome:

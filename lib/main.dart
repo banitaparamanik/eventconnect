@@ -1,3 +1,4 @@
+import 'package:eventconnect/presentation/onboarding_flow/onboarding_flow.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -26,18 +27,22 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Sizer(builder: (context, orientation, screenType) {
       return MaterialApp(
-          title: 'eventconnect',
-          theme: AppTheme.lightTheme,
-          darkTheme: AppTheme.darkTheme,
-          themeMode: ThemeMode.light,
-          builder: (context, child) {
-            return MediaQuery(
-                data: MediaQuery.of(context)
-                    .copyWith(textScaler: TextScaler.linear(1.0)),
-                child: child!);
-          },
-          debugShowCheckedModeBanner: false,
-          initialRoute: AppRoutes.initial);
+        title: 'eventconnect',
+        theme: AppTheme.lightTheme,
+        darkTheme: AppTheme.darkTheme,
+        themeMode: ThemeMode.light,
+        builder: (context, child) {
+          return MediaQuery(
+              data: MediaQuery.of(context)
+                  .copyWith(textScaler: TextScaler.linear(1.0)),
+              child: child!);
+        },
+        debugShowCheckedModeBanner: false,
+        initialRoute: AppRoutes.initial,
+        routes: {
+          AppRoutes.initial: (context) => OnboardingFlow(),
+        },
+      );
     });
   }
 }

@@ -13,8 +13,7 @@ var backendURL = "https://eventconne6587back.builtwithrocket.new/log-inspected-w
 class CustomWidgetInspector extends StatefulWidget {
   final Widget child;
 
-  const CustomWidgetInspector({Key? key, required this.child})
-      : super(key: key);
+  const CustomWidgetInspector({super.key, required this.child});
 
   @override
   State<CustomWidgetInspector> createState() => _CustomWidgetInspectorState();

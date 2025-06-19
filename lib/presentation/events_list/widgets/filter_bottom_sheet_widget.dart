@@ -101,16 +101,7 @@ class _FilterBottomSheetWidgetState extends State<FilterBottomSheetWidget> {
       firstDate: DateTime(2020),
       lastDate: DateTime(2030),
       initialDateRange: _selectedDateRange,
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: AppTheme.lightTheme.colorScheme,
-          ),
-          child: child!,
-        );
-      },
     );
-
     if (picked != null) {
       setState(() {
         _selectedDateRange = picked;
@@ -121,30 +112,18 @@ class _FilterBottomSheetWidgetState extends State<FilterBottomSheetWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 80.h,
+      padding: EdgeInsets.all(16.sp),
       decoration: BoxDecoration(
         color: AppTheme.lightTheme.colorScheme.surface,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20.sp)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16.sp)),
       ),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           _buildHeader(),
-          Expanded(
-            child: SingleChildScrollView(
-              padding: EdgeInsets.all(16.sp),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildDateRangeSection(),
-                  SizedBox(height: 24.sp),
-                  _buildEventTypeSection(),
-                  SizedBox(height: 24.sp),
-                  _buildAttendeeSection(),
-                  SizedBox(height: 32.sp),
-                ],
-              ),
-            ),
-          ),
+          _buildDateRangeSection(),
+          _buildEventTypeSection(),
+          _buildAttendeeSection(),
           _buildActionButtons(),
         ],
       ),
@@ -152,248 +131,96 @@ class _FilterBottomSheetWidgetState extends State<FilterBottomSheetWidget> {
   }
 
   Widget _buildHeader() {
-    return Container(
-      padding: EdgeInsets.all(16.sp),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color:
-                AppTheme.lightTheme.colorScheme.outline.withValues(alpha: 0.2),
-          ),
-        ),
-      ),
-      child: Row(
-        children: [
-          Text(
-            'Filter Events',
-            style: AppTheme.lightTheme.textTheme.titleLarge,
-          ),
-          const Spacer(),
-          TextButton(
-            onPressed: _clearAllFilters,
-            child: Text(
-              'Clear All',
-              style: AppTheme.lightTheme.textTheme.labelLarge?.copyWith(
-                color: AppTheme.lightTheme.colorScheme.primary,
-              ),
-            ),
-          ),
-          IconButton(
-            onPressed: () => Navigator.pop(context),
-            icon: CustomIconWidget(
-              iconName: 'close',
-              color: AppTheme.lightTheme.colorScheme.onSurfaceVariant,
-              size: 24.sp,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDateRangeSection() {
-    return ExpansionTile(
-      title: Text(
-        'Date Range',
-        style: AppTheme.lightTheme.textTheme.titleMedium,
-      ),
-      leading: CustomIconWidget(
-        iconName: 'date_range',
-        color: AppTheme.lightTheme.colorScheme.primary,
-        size: 24.sp,
-      ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.sp, vertical: 8.sp),
-          child: Column(
-            children: [
-              Container(
-                width: double.infinity,
-                padding: EdgeInsets.all(16.sp),
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: AppTheme.lightTheme.colorScheme.outline,
-                  ),
-                  borderRadius: BorderRadius.circular(8.sp),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Selected Range:',
-                      style: AppTheme.lightTheme.textTheme.labelMedium,
-                    ),
-                    SizedBox(height: 4.sp),
-                    Text(
-                      _selectedDateRange != null
-                          ? '${_formatDate(_selectedDateRange!.start)} - ${_formatDate(_selectedDateRange!.end)}'
-                          : 'No date range selected',
-                      style: AppTheme.lightTheme.textTheme.bodyMedium?.copyWith(
-                        color: _selectedDateRange != null
-                            ? AppTheme.lightTheme.colorScheme.onSurface
-                            : AppTheme.lightTheme.colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 12.sp),
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: _selectDateRange,
-                      child: Text('Select Date Range'),
-                    ),
-                  ),
-                  if (_selectedDateRange != null) ...[
-                    SizedBox(width: 8.sp),
-                    IconButton(
-                      onPressed: () {
-                        setState(() {
-                          _selectedDateRange = null;
-                        });
-                      },
-                      icon: CustomIconWidget(
-                        iconName: 'clear',
-                        color: AppTheme.lightTheme.colorScheme.error,
-                        size: 20.sp,
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-            ],
-          ),
+        Text('Filters', style: AppTheme.lightTheme.textTheme.titleMedium),
+        TextButton(
+          onPressed: _clearAllFilters,
+          child: const Text('Clear All'),
         ),
       ],
     );
   }
 
+  Widget _buildDateRangeSection() {
+    return ListTile(
+      title: Text('Date Range'),
+      subtitle: Text(_selectedDateRange == null
+          ? 'Any'
+          : '${_selectedDateRange!.start.toLocal()} - ${_selectedDateRange!.end.toLocal()}'),
+      trailing: IconButton(
+        icon: Icon(Icons.date_range),
+        onPressed: _selectDateRange,
+      ),
+    );
+  }
+
   Widget _buildEventTypeSection() {
-    return ExpansionTile(
-      title: Text(
-        'Event Type',
-        style: AppTheme.lightTheme.textTheme.titleMedium,
-      ),
-      leading: CustomIconWidget(
-        iconName: 'category',
-        color: AppTheme.lightTheme.colorScheme.primary,
-        size: 24.sp,
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.sp, vertical: 8.sp),
-          child: Wrap(
-            spacing: 8.sp,
-            runSpacing: 8.sp,
-            children: _eventTypes.map((type) {
-              final isSelected = _selectedEventTypes.contains(type);
-              return FilterChip(
-                label: Text(type),
-                selected: isSelected,
-                onSelected: (selected) {
-                  setState(() {
-                    if (selected) {
-                      _selectedEventTypes.add(type);
-                    } else {
-                      _selectedEventTypes.remove(type);
-                    }
-                  });
-                },
-                backgroundColor: AppTheme.lightTheme.colorScheme.surface,
-                selectedColor: AppTheme.lightTheme.colorScheme.primary
-                    .withValues(alpha: 0.2),
-                checkmarkColor: AppTheme.lightTheme.colorScheme.primary,
-                labelStyle: AppTheme.lightTheme.textTheme.labelMedium?.copyWith(
-                  color: isSelected
-                      ? AppTheme.lightTheme.colorScheme.primary
-                      : AppTheme.lightTheme.colorScheme.onSurface,
-                ),
-                side: BorderSide(
-                  color: isSelected
-                      ? AppTheme.lightTheme.colorScheme.primary
-                      : AppTheme.lightTheme.colorScheme.outline,
-                ),
-              );
-            }).toList(),
-          ),
+        Text('Event Type', style: AppTheme.lightTheme.textTheme.bodyLarge),
+        Wrap(
+          spacing: 8.0,
+          children: _eventTypes.map((type) {
+            final selected = _selectedEventTypes.contains(type);
+            return FilterChip(
+              label: Text(type),
+              selected: selected,
+              onSelected: (bool value) {
+                setState(() {
+                  if (value) {
+                    _selectedEventTypes.add(type);
+                  } else {
+                    _selectedEventTypes.remove(type);
+                  }
+                });
+              },
+            );
+          }).toList(),
         ),
       ],
     );
   }
 
   Widget _buildAttendeeSection() {
-    return ExpansionTile(
-      title: Text(
-        'Attendee Count',
-        style: AppTheme.lightTheme.textTheme.titleMedium,
-      ),
-      leading: CustomIconWidget(
-        iconName: 'people',
-        color: AppTheme.lightTheme.colorScheme.primary,
-        size: 24.sp,
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.sp, vertical: 8.sp),
-          child: Column(
-            children: _attendeeFilterOptions.map((option) {
-              final isSelected = _selectedAttendeeFilters.contains(option);
-              return CheckboxListTile(
-                title: Text(option),
-                value: isSelected,
-                onChanged: (selected) {
-                  setState(() {
-                    if (selected == true) {
-                      _selectedAttendeeFilters.add(option);
-                    } else {
-                      _selectedAttendeeFilters.remove(option);
-                    }
-                  });
-                },
-                controlAffinity: ListTileControlAffinity.leading,
-                contentPadding: EdgeInsets.zero,
-              );
-            }).toList(),
-          ),
+        Text('Attendee Count', style: AppTheme.lightTheme.textTheme.bodyLarge),
+        Wrap(
+          spacing: 8.0,
+          children: _attendeeFilterOptions.map((option) {
+            final selected = _selectedAttendeeFilters.contains(option);
+            return FilterChip(
+              label: Text(option),
+              selected: selected,
+              onSelected: (bool value) {
+                setState(() {
+                  if (value) {
+                    _selectedAttendeeFilters.add(option);
+                  } else {
+                    _selectedAttendeeFilters.remove(option);
+                  }
+                });
+              },
+            );
+          }).toList(),
         ),
       ],
     );
   }
 
   Widget _buildActionButtons() {
-    return Container(
-      padding: EdgeInsets.all(16.sp),
-      decoration: BoxDecoration(
-        border: Border(
-          top: BorderSide(
-            color:
-                AppTheme.lightTheme.colorScheme.outline.withValues(alpha: 0.2),
-          ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        ElevatedButton(
+          onPressed: _applyFilters,
+          child: const Text('Apply'),
         ),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: OutlinedButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
-            ),
-          ),
-          SizedBox(width: 12.sp),
-          Expanded(
-            child: ElevatedButton(
-              onPressed: _applyFilters,
-              child: Text('Apply Filters (${_calculateFilterCount()})'),
-            ),
-          ),
-        ],
-      ),
+      ],
     );
-  }
-
-  String _formatDate(DateTime date) {
-    return '${date.day}/${date.month}/${date.year}';
   }
 }
